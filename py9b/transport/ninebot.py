@@ -19,7 +19,7 @@ class NinebotTransport(BT):
 			while True:
 				c = self.link.read(1)
 				if c=="\xA5":
-					return True 
+					return True
 				if c!="\x5A":
 					break # start waiting 5A again, else - this is 5A, so wait for A5
 
@@ -28,19 +28,19 @@ class NinebotTransport(BT):
 		self._wait_pre()
 		pkt = self.link.read(1)
 		l = ord(pkt)+6
-		for i in xrange(l):
+		for i in range(l):
 			pkt += self.link.read(1)
 		ck_calc = checksum(pkt[0:-2])
 		ck_pkt = unpack("<H", pkt[-2:])[0]
 		if ck_pkt!=ck_calc:
-			print "Checksum mismatch !"
+			print ("Checksum mismatch !")
 			return None
 		return BasePacket(ord(pkt[1]), ord(pkt[2]), ord(pkt[3]), ord(pkt[4]), pkt[5:-2]) # sa, da, cmd, arg, data
 
-	
+
 	def send(self, packet):
-		pkt = pack("<BBBBB", len(packet.data), packet.src, packet.dst, packet.cmd, packet.arg)+packet.data
-		pkt = "\x5A\xA5" + pkt + pack("<H", checksum(pkt))
+		pkt = pack("<BBBBB".encode(), len(packet.data), packet.src, packet.dst, packet.cmd, packet.arg) + packet.data
+		pkt = "\x5A\xA5".encode() + pkt + pack("<H", checksum(pkt))
 		self.link.write(pkt)
 
 

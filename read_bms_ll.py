@@ -14,23 +14,23 @@ link = SerialLink(dump=True)
 #link = BLELink()
 
 with link:
-	print "Scanning..."
+	print ("Scanning...")
 	ports = link.scan()
-	print ports
+	print (ports)
 
 	tran = XiaomiTransport(link)
 
 	#link.open(("192.168.1.45", 6000))
 	link.open(ports[0][1])
-	print "Connected"
+	print ("Connected")
 
 	req = PKT(src=BT.HOST, dst=BT.BMS, cmd=0x01, arg=0, data=chr(READ_CHUNK_SIZE))
 
 	hfo = open("BmsRegs.bin", "wb")
-	for i in xrange(0x0, 0x100, READ_CHUNK_SIZE):
-		print ".",
+	for i in range(0x0, 0x100, READ_CHUNK_SIZE):
+		print ("."),
 		req.arg = i>>1
-		for retry in xrange(5):
+		for retry in range(5):
 			tran.send(req)
 			try:
 				rsp = tran.recv()
@@ -38,7 +38,7 @@ with link:
 				continue
 			break
 		else:
-			print "No response !"
+			print ("No response !")
 			break
 		hfo.write(rsp.data)
 

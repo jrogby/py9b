@@ -44,7 +44,7 @@ class TCPLink(BaseLink):
 		p = port.partition(':')
 		host = p[0]
 		port = int(p[2], 10)
-		print host, port
+		print (host, port)
 		try:
 			self.sock.connect((host, port))
 		except socket.timeout:
@@ -61,13 +61,13 @@ class TCPLink(BaseLink):
 	def read(self, size):
 		data = recvall(self.sock, size)
 		if data and self.dump:
-			print "<", hexlify(data).upper()
+			print ("<", hexlify(data).upper())
 		return data
 
 
 	def write(self, data):
 		if self.dump:
-			print ">", hexlify(data).upper()
+			print (">", hexlify(data).upper())
 		size = len(data)
 		ofs = 0
 		while size:

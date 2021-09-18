@@ -1,7 +1,8 @@
 """BLE link using BlueGiga adapter via PyGatt/BGAPI"""
 
 from __future__ import absolute_import
-import pygatt
+#import pygatt
+import bleak # macos bt replace pygatt
 from .base import BaseLink, LinkTimeoutException, LinkOpenException
 from binascii import hexlify
 
@@ -20,7 +21,7 @@ class Fifo():
 
 	def read(self, size=1, timeout=None): # but read string
 		res = ''
-		for i in xrange(size):
+		for i in range(size):
 			res += chr(self.q.get(True, timeout))
 		return res
 
@@ -49,7 +50,7 @@ class BLELink(BaseLink):
 	def __exit__(self, exc_type, exc_value, traceback):
 		self.close()
 
-	
+
 	def _make_rx_cb(self): # this is a closure :)
 		def rx_cb(handle, value):
 			self._rx_fifo.write(value)
@@ -67,12 +68,12 @@ class BLELink(BaseLink):
 
 	def open(self, port):
 		try:
-			self._dev = self._adapter.connect(port, address_type=pygatt.BLEAddressType.random)
+			# self._dev = self._adapter.connect(port, address_type=pygatt.BLEAddressType.random)
 			self._dev.subscribe(_tx_char_uuid, callback=self._make_rx_cb())
 			self._wr_handle = self._dev.get_handle(_rx_char_uuid)
 		except pygatt.exceptions.NotConnectedError:
 			raise LinkOpenException
-			
+
 
 	def close(self):
 		if self._dev:
@@ -88,13 +89,15 @@ class BLELink(BaseLink):
 		except queue.Empty:
 			raise LinkTimeoutException
 		if self.dump:
-			print '<', hexlify(data).upper()
+			print ('<')
+			print (hexlify(data).upper())
 		return data
 
 
 	def write(self, data):
 		if self.dump:
-			print '>', hexlify(data).upper()
+			print ('>')
+			print( hexlify(data).upper())
 		size = len(data)
 		ofs = 0
 		while size:

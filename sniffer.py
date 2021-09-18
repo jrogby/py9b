@@ -14,16 +14,17 @@ link = SerialLink()
 #link = BLELink()
 
 with link:
-	print "Scanning..."
-	ports = link.scan()
-	print ports
+	# print ("Scanning...")
+	# ports = link.scan()
+	# print (ports)
 
 	#tran = XiaomiTransport(link)
 	tran = NinebotTransport(link)
 
 	#link.open(("192.168.1.45", 6000))
-	link.open(ports[0][1])
-	print "Connected"
+	# link.open(ports[0][1])
+	link.open("/dev/cu.usbserial-10")
+	print ("Connected")
 
 	last_esc_64 = ""
 	last_esc_65 = ""
@@ -39,14 +40,14 @@ with link:
 						if rsp.data==last_esc_65:
 							continue
 						ll, throttle, brake, u2, u3 = unpack("<BBBBB", rsp.data)
-						print "BLE->ESC: TH: %02X, BR: %02X, %02X %02X" % (throttle, brake, u2, u3)
+						print ("BLE->ESC: TH: %02X, BR: %02X, %02X %02X" % (throttle, brake, u2, u3))
 						last_esc_65 = rsp.data
 						continue
 					elif len(rsp.data)==7:
 						if rsp.data==last_esc_64:
 							continue
 						ll, throttle, brake, u2, u3, ver = unpack("<BBBBBH", rsp.data)
-						print "BLE->ESC: TH: %02X, BR: %02X, %02X %02X, VER: %04X" % (throttle, brake, u2, u3, ver)
+						print ("BLE->ESC: TH: %02X, BR: %02X, %02X %02X, VER: %04X" % (throttle, brake, u2, u3, ver))
 						last_esc_64 = rsp.data
 						continue
 				elif rsp.src==BT.HOST and rsp.dst==BT.BLE and rsp.cmd==0x64:
@@ -54,13 +55,13 @@ with link:
 						if rsp.data==last_ble_64:
 							continue
 						u0, u1, u2, u3 = unpack("<BBBB", rsp.data)
-						print "ESC->BLE: %02X %02X %02X %02X" % (u0, u1, u2, u3)
+						print ("ESC->BLE: %02X %02X %02X %02X" % (u0, u1, u2, u3))
 						last_ble_64 = rsp.data
 						continue
-				print rsp
+				print (rsp)
 			except LinkTimeoutException:
 				pass
 	except KeyboardInterrupt:
 		pass
-		
+
 	link.close()

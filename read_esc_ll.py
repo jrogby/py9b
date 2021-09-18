@@ -14,23 +14,23 @@ READ_CHUNK_SIZE = 0x40
 link = BLELink()
 
 with link:
-	print "Scanning..."
+	print ("Scanning...")
 	ports = link.scan()
-	print ports
+	print (ports)
 
 	tran = XiaomiTransport(link)
 
 	#link.open(("192.168.1.45", 6000))
 	link.open(ports[0][1])
-	print "Connected"
+	print ("Connected")
 
 	req = PKT(src=BT.HOST, dst=BT.ESC, cmd=0x01, arg=0, data=chr(READ_CHUNK_SIZE))
 
 	hfo = open("EscRegs.bin", "wb")
-	for i in xrange(0, 0x200, READ_CHUNK_SIZE):
-		print ".",
+	for i in range(0, 0x200, READ_CHUNK_SIZE):
+		print ("."),
 		req.arg = i>>1
-		for retry in xrange(3):
+		for retry in range(3):
 			tran.send(req)
 			try:
 				rsp = tran.recv()

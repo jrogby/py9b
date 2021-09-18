@@ -21,18 +21,27 @@ class SerialLink(BaseLink):
 		self.close()
 
 
+#		ports = lp.comports()
+#		res = [("%s %04X:%04X" % (port.device, port.vid, port.pid), port.device) for port in ports]
+#		return res
 	def scan(self):
+		result1 = [{"port": p, "description": d, "hwid": h}
+					for p, d, h in lp.comports() if p]
 		ports = lp.comports()
-		res = [("%s %04X:%04X" % (port.device, port.vid, port.pid), port.device) for port in ports]
-		return res
-
+		result2 = [("%s %s:%s" % (p.device, p.vid, p.pid), p.device)
+					for p in ports if p]
+    	# fix for PySerial
+		# if not result and system() == "Darwin":
+		# 	for p in glob("/dev/cu.*"):
+		# 			result.append({"port": p, "description": "", "hwid": ""})
+		return result2
 
 	def open(self, port):
 		try:
-			self.com = serial.Serial(port, 115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, timeout=self.timeout)		
+			self.com = serial.Serial(port, 115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, timeout=self.timeout)
 		except serial.SerialException:
 			raise LinkOpenException
-			
+
 
 	def close(self):
 		if self.com:
@@ -48,13 +57,15 @@ class SerialLink(BaseLink):
 		if len(data)<size:
 			raise LinkTimeoutException
 		if self.dump:
-			print "<", hexlify(data).upper()
+			print ("<")
+			print (hexlify(data).upper())
 		return data
 
 
 	def write(self, data):
 		if self.dump:
-			print ">", hexlify(data).upper()
+			print (">")
+			print (hexlify(data).upper())
 		self.com.write(data)
 
 

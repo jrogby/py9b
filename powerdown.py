@@ -14,18 +14,18 @@ from py9b.command.regio import ReadRegs, WriteRegs
 link = BLELink()
 
 with link:
-	print "Scanning..."
+	print ("Scanning...")
 	ports = link.scan()
-	print ports
+	print (ports)
 
 	#tran = XiaomiTransport(link)
 	tran = NinebotTransport(link)
 
 	#link.open(("192.168.1.45", 6000))
 	link.open(ports[0][1])
-	print "Connected"
+	print ("Connected")
 
 	print('Power off...')
-	tran.execute(WriteRegs(BT.ESC, 0x79, '<H', 0x0001)) 
+	tran.execute(WriteRegs(BT.ESC, 0x79, '<H', 0x0001))
 
 	link.close()

@@ -17,27 +17,27 @@ link = SerialLink(dump=True)
 #link = BLELink()
 
 with link:
-	print "Scanning..."
+	print ("Scanning...")
 	ports = link.scan()
-	print ports
+	print (ports)
 
 	tran = XiaomiTransport(link)
 
 	#link.open(("192.168.1.45", 6000))
-	link.open(ports[0][1])
-	print "Connected"
+	link.open("/dev/cu.usbserial-10")
+	print ("Connected")
 
 	hfo = open("BmsEep.bin", "wb")
-	for i in xrange(ADDR, ADDR+SIZE, READ_CHUNK_SIZE):
-		print ".",
-		for retry in xrange(5):
+	for i in range(ADDR, ADDR+SIZE, READ_CHUNK_SIZE):
+		print ("."),
+		for retry in range(5):
 			try:
 				data = tran.execute(ReadMem(BT.BMS, i, "16s"))[0]
 			except LinkTimeoutException:
 				continue
 			break
 		else:
-			print "No response !"
+			print ("No response !")
 			break
 		hfo.write(data)
 

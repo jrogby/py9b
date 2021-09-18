@@ -44,7 +44,7 @@ def UpdateFirmware(link, tran, dev, fwfile):
 
 	print('Locking...')
 	tran.execute(WriteRegs(BT.ESC, 0x70, '<H', 0x0001))
-	
+
 	print('Starting...')
 	tran.execute(StartUpdate(dev, fw_size))
 
@@ -79,7 +79,7 @@ parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpForm
 	'\nExample 2:  %(prog)s -i tcp -a 192.168.1.10:6000 bms bms115.bin  - flash bms115.bin to BMS over TCP-BLE bridge at 192.168.1.10:6000'
 	'\nExample 3:  %(prog)s -i serial -a COM2 esc CFW.bin  - flash CFW.bin to ESC via COM2'
 	'\nExample 4:  %(prog)s -i ble -a 12:34:56:78:9A:BC -p ninebot extbms bms107.bin  - flash bms107.bin to Ninebot\'s external BMS via BLE, use specified BLE address')
-	
+
 devices = {'ble' : BT.BLE, 'esc' : BT.ESC, 'bms' : BT.BMS, 'extbms' : BT.EXTBMS }
 parser.add_argument('device', help='target device', type=str.lower, choices=devices)
 
@@ -118,7 +118,7 @@ elif args.interface=='serial':
 	link = SerialLink()
 else:
 	exit('!!! BUG !!! Unknown interface selected: '+args.interface)
-		
+
 with link:
 	tran = protocols.get(args.protocol)(link)
 

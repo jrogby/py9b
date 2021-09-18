@@ -11,15 +11,15 @@ link = TCPLink()
 #link = BLELink()
 
 with link:
-	print "Scanning..."
+	print ("Scanning...")
 	ports = link.scan()
-	print ports
+	print (ports)
 
 	tran = XiaomiTransport(link)
 
 	link.open(("192.168.1.45", 6000))
 	#link.open(ports[0][1])
-	print "Connected"
+	print ("Connected")
 
 	req = PKT(src=BT.HOST, dst=BT.ESC, cmd=0x02, arg=0x41, data="\xCE\xAB\x00\x00")
 
@@ -29,4 +29,4 @@ with link:
 	finally:
 		link.close()
 
-	print rsp
+	print (rsp)

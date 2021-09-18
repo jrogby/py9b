@@ -7,8 +7,8 @@ from py9b.transport.xiaomi import XiaomiTransport
 #link = SerialLink()
 with TCPLink() as link:
 	ports = link.scan()
-	print ports
-	
+	print (ports)
+
 	tran = XiaomiTransport(link)
 
 	#link.open(("192.168.1.45", 6000))
@@ -22,8 +22,8 @@ with TCPLink() as link:
 		try:
 			rsp = tran.recv()
 		except LinkTimeoutException:
-			print "No response"
+			print ("No response")
 			continue
-		print rsp
+		print (rsp)
 
 	link.close()
